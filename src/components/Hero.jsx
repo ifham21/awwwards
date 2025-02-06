@@ -8,17 +8,31 @@ const Hero = () => {
   const [loadedVideos, setLoadedVideos] = useState(0);
 
 
-  const totalVideos = 4;
+  const totalVideos = 3;
 
   const nextVideoRef = useRef(null);
 
 
+  const handleVideoLoad = () => {
+    setLoadedVideos((prev) => prev + 1);
+  }
+
+  // 0 % 4 = 0 + 1 => 1
+  // 1 % 4 = 1 + 1 => 2
+  // 2 % 4 = 2 + 1 => 3
+  // 3 % 4 = 3 + 1 => 4
+  // 4 % 4 = 0 + 1 => 1
+  const upcomingVideoIndex = (currentIndex % totalVideos) + 1;
+
   const handleMiniVdClick = () => {
     setHasClicked(true);
 
-    setCurrentIndex((prevIndex) => prevIndex + 1);
+    setCurrentIndex(upcomingVideoIndex);
     
   }
+
+
+  const getVideoSrc = (index) => `videos/hero-${index}.mp4`
 
 
   return (
@@ -32,14 +46,34 @@ const Hero = () => {
                    rounded-lg 
                    bg-blue">
             <div className='mask-clip-path absolute-center absolute z-50 size-64
-                cursor-pointer overflow-x-hidden rounded-lg
+                cursor-pointer overflow-hidden rounded-lg
             '>
-                <div onClick={handleMiniVdClick} className='origin-center'>
+                <div onClick={handleMiniVdClick} 
+                    className='origin-center 
+                              scale-50 opacity-0 transition-all 
+                              duration-500 ease-in 
+                              hover:scale-100 hover:opacity-100'
+                >
                   <video 
-                    ref={nextVideoRef}
+                    ref = {nextVideoRef}
+                    src = {getVideoSrc(upcomingVideoIndex)}
+                    loop
+                    muted
+                    id='current-video'
+                    className='size-64 
+                              origin-center 
+                              scale-150 
+                              object-cover 
+                              object-center'
+                    onLoadedData = {handleVideoLoad}
                   />
                 </div>
             </div>
+
+            <video 
+                ref={nextVideoRef}
+                src={getVideoSrc(currentIndex)}
+            />
         </div>
     </div>
   )
